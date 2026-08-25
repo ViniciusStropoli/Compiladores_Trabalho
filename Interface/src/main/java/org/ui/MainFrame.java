@@ -1,4 +1,4 @@
-package org.UI;
+package org.ui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,6 +19,8 @@ public class MainFrame {
         frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         frame.setSize(1500, 800);
         frame.setResizable(false);
+
+        frame.getContentPane().setLayout(new BorderLayout());
 
         JPanel sidePanel = createSideBar();
 
@@ -43,28 +45,48 @@ public class MainFrame {
         sidePanel.setPreferredSize(new Dimension(150, 800));
 
         // Side bar buttons with icons
-        sidePanel.add(createJButton("New", "src/main/resources/icons/new.png"));
+        sidePanel.add(createJButton("New [ctrl + n]", "/icons/new.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Open", "src/main/resources/icons/open.png"));
+        sidePanel.add(createJButton("Open [ctrl + o]", "/icons/open.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Save", "src/main/resources/icons/save.png"));
+        sidePanel.add(createJButton("Save [ctrl + s]", "/icons/save.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Copy", "src/main/resources/icons/copy.png"));
+        sidePanel.add(createJButton("Copy [ctrl + c]", "/icons/copy.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Paste", "src/main/resources/icons/paste.png"));
+        sidePanel.add(createJButton("Paste [ctrl + v]", "/icons/paste.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Cut", "src/main/resources/icons/cut.png"));
+        sidePanel.add(createJButton("Cut [ctrl + x]", "/icons/cut.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Compile", "src/main/resources/icons/compile.png"));
+        sidePanel.add(createJButton("Compile [F7]", "/icons/compile.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("About", "src/main/resources/icons/about.png"));
+        sidePanel.add(createJButton("About [F1]", "/icons/about.png"));
 
         return sidePanel;
     }
 
     public JButton createJButton(String text, String iconPath) {
         JButton button = new JButton(text);
-        button.setIcon(new ImageIcon(iconPath));
+
+        java.net.URL url = getClass().getResource(iconPath);
+        if (url != null) {
+            ImageIcon icon = new ImageIcon(url);
+
+            int whidht = 23;
+            int height = 23;
+
+            Image imgOriginal = icon.getImage();
+            Image imgRedimensionada = imgOriginal.getScaledInstance(whidht, height, Image.SCALE_SMOOTH);
+            ImageIcon rescaledIcon = new ImageIcon(imgRedimensionada);
+
+            button.setIcon(rescaledIcon);
+
+        } else {
+            System.err.println("Imagem não encontrada em: " + iconPath);
+        }
+
+        button.setVerticalTextPosition(SwingConstants.BOTTOM);
+        button.setVerticalTextPosition(SwingConstants.CENTER);
+
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         Dimension buttonSize = new Dimension(120, 90);
