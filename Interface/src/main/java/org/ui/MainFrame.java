@@ -122,6 +122,9 @@ public class MainFrame {
         messageArea.setBackground(Color.LIGHT_GRAY);
         messageArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
         messageArea.setLineWrap(false); 
+        // messageArea.setRows(18);
+        // messageArea.setColumns(220);
+        // messageArea.setText("Mensagem aleatoria de teste para verificar a rolagem.");
 
 
         //create JScrollPane with scrollbars aways visible
@@ -129,6 +132,9 @@ public class MainFrame {
 
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        // scrollPane.getHorizontalScrollBar().setVisible(true);
+        // scrollPane.getVerticalScrollBar().setVisible(true);
 
         //set preferred size 
         scrollPane.setPreferredSize(new Dimension(1350,200));
@@ -147,7 +153,7 @@ public class MainFrame {
         statusBar.setBorder(BorderFactory.createLineBorder(Color.GRAY,1));
 
         //Create JLabel for status bar 
-        statusBarLabel = new JLabel("nenhum arquivo aberto");
+        statusBarLabel = new JLabel("Nenhum arquivo aberto");
         statusBarLabel.setFont(new Font("Arial", Font.PLAIN, 11));
         statusBarLabel.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
 
