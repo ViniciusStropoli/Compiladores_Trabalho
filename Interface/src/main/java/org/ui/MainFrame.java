@@ -1,9 +1,14 @@
 package org.ui;
 
 import javax.swing.*;
+
 import java.awt.*;
 
+import javax.swing.border.Border;
+
 public class MainFrame {
+      private JTextArea messageArea;  
+      private JLabel statusBarLabel;
     public static void main(String[] args) {
         // Create and display the main frame
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
@@ -24,10 +29,23 @@ public class MainFrame {
 
         JPanel sidePanel = createSideBar();
 
-        // Main panel
+       // Main panel - agora com BorderLayout pra organizar melhor
         JPanel mainPanel = new JPanel();
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setLayout(new BorderLayout()); /*(aqui com o BorderLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));/* */
+
+        //Adiciona os componentes ao mainPanel
+        JPanel editorPlaceholder = new JPanel();
+        editorPlaceholder.setBackground(Color.WHITE);
+        mainPanel.add(editorPlaceholder, BorderLayout.CENTER);
+
+        //Message area vai no SOUTH (parte de cima)
+        mainPanel.add(createMessageArea(), BorderLayout.SOUTH);
+
+        //Status bar vai na base(SOUTH do frame)
+        frame.add(createStatusBar(), BorderLayout.SOUTH);
+
+
 
         // Add panels to the frame
         frame.add(sidePanel, BorderLayout.WEST);
@@ -95,4 +113,51 @@ public class MainFrame {
 
         return button;
     }
+    //create MessageArea (non-editable with scrollbars always visible)
+
+    private JScrollPane createMessageArea() {
+        //Create JTextArea not editable
+        messageArea = new JTextArea();
+        messageArea.setEditable(false);
+        messageArea.setBackground(Color.LIGHT_GRAY);
+        messageArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        messageArea.setLineWrap(false); 
+
+
+        //create JScrollPane with scrollbars aways visible
+        JScrollPane scrollPane = new JScrollPane(messageArea);
+
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+
+        //set preferred size 
+        scrollPane.setPreferredSize(new Dimension(1350,200));
+
+        return scrollPane;        
+
+    }
+
+    //create StatusBar (non-editable with scrollbars always visible)
+    private JPanel createStatusBar() {
+        //Create JPanel for status bar with width 1500 and height 25
+        JPanel statusBar = new JPanel();
+        statusBar.setLayout(new BorderLayout());
+        statusBar.setPreferredSize(new Dimension(1500, 25));
+        statusBar.setBackground(Color.LIGHT_GRAY);
+        statusBar.setBorder(BorderFactory.createLineBorder(Color.GRAY,1));
+
+        //Create JLabel for status bar 
+        statusBarLabel = new JLabel("nenhum arquivo aberto");
+        statusBarLabel.setFont(new Font("Arial", Font.PLAIN, 11));
+        statusBarLabel.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
+
+        statusBar.add(statusBarLabel, BorderLayout.WEST);
+
+        return statusBar;
+    }
+
+
+
+
+
 }
