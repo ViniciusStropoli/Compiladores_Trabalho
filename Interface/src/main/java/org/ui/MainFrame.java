@@ -1,16 +1,14 @@
 package org.ui;
 
 import javax.swing.*;
-
 import java.awt.*;
 
-import javax.swing.border.Border;
-
 public class MainFrame {
-      private JTextArea messageArea;  
-      private JLabel statusBarLabel;
+
+    private JTextArea messageArea;
+    private JLabel statusBarLabel;
+
     public static void main(String[] args) {
-        // Create and display the main frame
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
                 new MainFrame().createAndShowGUI();
@@ -19,7 +17,6 @@ public class MainFrame {
     }
 
     private void createAndShowGUI() {
-        // Create the main frame
         javax.swing.JFrame frame = new javax.swing.JFrame("Main Frame");
         frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
         frame.setSize(1500, 800);
@@ -29,55 +26,48 @@ public class MainFrame {
 
         JPanel sidePanel = createSideBar();
 
-       // Main panel - agora com BorderLayout pra organizar melhor
         JPanel mainPanel = new JPanel();
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.setLayout(new BorderLayout()); /*(aqui com o BorderLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));/* */
+        mainPanel.setLayout(new BorderLayout());
 
-        //Adiciona os componentes ao mainPanel
         JPanel editorPlaceholder = new JPanel();
         editorPlaceholder.setBackground(Color.WHITE);
         mainPanel.add(editorPlaceholder, BorderLayout.CENTER);
 
-        //Message area vai no SOUTH (parte de cima)
+        // South related to the main panel
         mainPanel.add(createMessageArea(), BorderLayout.SOUTH);
 
-        //Status bar vai na base(SOUTH do frame)
+        // South related to the frame (lower)
         frame.add(createStatusBar(), BorderLayout.SOUTH);
-
-
 
         // Add panels to the frame
         frame.add(sidePanel, BorderLayout.WEST);
         frame.add(mainPanel, BorderLayout.CENTER);
 
-        // Display the frame
         frame.setVisible(true);
     }
 
     public JPanel createSideBar() {
-        // Create the panel to hold the buttons
         JPanel sidePanel = new JPanel();
         sidePanel.setBackground(Color.LIGHT_GRAY);
         sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
         sidePanel.setPreferredSize(new Dimension(150, 800));
 
-        // Side bar buttons with icons
-        sidePanel.add(createJButton("New [ctrl + n]", "/icons/new.png"));
+        sidePanel.add(createJButton("<html><center>New<br><font color='#777777'>[ctrl + n]</html>", "/icons/new.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Open [ctrl + o]", "/icons/open.png"));
+        sidePanel.add(createJButton("<html><center>Open<br><font color='#777777'> [ctrl + o]</html>", "/icons/open.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Save [ctrl + s]", "/icons/save.png"));
+        sidePanel.add(createJButton("<html><center>Save<br><font color='#777777'> [ctrl + s]</html>", "/icons/save.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Copy [ctrl + c]", "/icons/copy.png"));
+        sidePanel.add(createJButton("<html><center>Copy<br><font color='#777777'>[ctrl + c]</html>", "/icons/copy.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Paste [ctrl + v]", "/icons/paste.png"));
+        sidePanel.add(createJButton("<html><center>Paste<br><font color='#777777'> [ctrl + v]</html>", "/icons/paste.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Cut [ctrl + x]", "/icons/cut.png"));
+        sidePanel.add(createJButton("<html><center>Cut<br><font color='#777777'> [ctrl + x]</html>", "/icons/cut.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("Compile [F7]", "/icons/compile.png"));
+        sidePanel.add(createJButton("<html><center>Compilee<br><font color='#777777'> [F7]</html>", "/icons/compile.png"));
         sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("About [F1]", "/icons/about.png"));
+        sidePanel.add(createJButton("<html><center>About<br><font color='#777777'> [F1]</html>", "/icons/about.png"));
 
         return sidePanel;
     }
@@ -86,6 +76,7 @@ public class MainFrame {
         JButton button = new JButton(text);
 
         java.net.URL url = getClass().getResource(iconPath);
+
         if (url != null) {
             ImageIcon icon = new ImageIcon(url);
 
@@ -93,17 +84,17 @@ public class MainFrame {
             int height = 23;
 
             Image imgOriginal = icon.getImage();
-            Image imgRedimensionada = imgOriginal.getScaledInstance(whidht, height, Image.SCALE_SMOOTH);
-            ImageIcon rescaledIcon = new ImageIcon(imgRedimensionada);
+            Image rescaledIcon = imgOriginal.getScaledInstance(whidht, height, Image.SCALE_SMOOTH);
 
-            button.setIcon(rescaledIcon);
+            button.setIcon(new ImageIcon(rescaledIcon));
 
         } else {
             System.err.println("Imagem não encontrada em: " + iconPath);
         }
 
         button.setVerticalTextPosition(SwingConstants.BOTTOM);
-        button.setVerticalTextPosition(SwingConstants.CENTER);
+
+        button.setHorizontalTextPosition(SwingConstants.CENTER);
 
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
 
@@ -113,41 +104,41 @@ public class MainFrame {
 
         return button;
     }
-    //create MessageArea (non-editable with scrollbars always visible)
 
+    // create MessageArea (non-editable with scrollbars always visible)
     private JScrollPane createMessageArea() {
-        //Create JTextArea not editable
         messageArea = new JTextArea();
         messageArea.setEditable(false);
         messageArea.setBackground(Color.LIGHT_GRAY);
         messageArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
-        messageArea.setLineWrap(false); 
+        messageArea.setLineWrap(false);
+        messageArea.setRows(18);
+        messageArea.setColumns(220);
+        messageArea.setText("Mensagem aleatoria de teste para verificar a rolagem.");
 
-
-        //create JScrollPane with scrollbars aways visible
         JScrollPane scrollPane = new JScrollPane(messageArea);
 
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 
-        //set preferred size 
+        scrollPane.getHorizontalScrollBar().setVisible(true);
+        scrollPane.getVerticalScrollBar().setVisible(true);
+
         scrollPane.setPreferredSize(new Dimension(1350,200));
 
         return scrollPane;        
 
     }
 
-    //create StatusBar (non-editable with scrollbars always visible)
+    // create StatusBar (non-editable with scrollbars always visible)
     private JPanel createStatusBar() {
-        //Create JPanel for status bar with width 1500 and height 25
         JPanel statusBar = new JPanel();
         statusBar.setLayout(new BorderLayout());
         statusBar.setPreferredSize(new Dimension(1500, 25));
         statusBar.setBackground(Color.LIGHT_GRAY);
         statusBar.setBorder(BorderFactory.createLineBorder(Color.GRAY,1));
 
-        //Create JLabel for status bar 
-        statusBarLabel = new JLabel("nenhum arquivo aberto");
+        statusBarLabel = new JLabel("Nenhum arquivo aberto");
         statusBarLabel.setFont(new Font("Arial", Font.PLAIN, 11));
         statusBarLabel.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
 
@@ -155,9 +146,4 @@ public class MainFrame {
 
         return statusBar;
     }
-
-
-
-
-
 }
