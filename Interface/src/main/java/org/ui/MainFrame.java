@@ -1,38 +1,64 @@
 package org.ui;
 
+import org.ui.actions.*;
+import org.ui.components.SideBar;
+import org.ui.keybindings.EditorKeyBindings;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
 
-public class MainFrame {
+public class MainFrame extends JFrame {
 
     private JTextArea messageArea;
     private JLabel statusBarLabel;
     private JTextArea editorArea;
     private JTextArea lineNumberArea;
 
-    public static void main(String[] args) {
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                new MainFrame().createAndShowGUI();
-            }
-        });
+    private Action newAction;
+    private Action openAction;
+    private Action saveAction;
+    private Action copyAction;
+    private Action pasteAction;
+    private Action cutAction;
+    private Action compileAction;
+    private Action aboutAction;
+
+    public MainFrame() {
+        super("Main Frame");
+
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(1500, 800);
+        setResizable(false);
+        setLayout(new BorderLayout());
+
+        createActions();
+        createGUI();
+        setupKeyBindings();
+
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
-    private void createAndShowGUI() {
-        javax.swing.JFrame frame = new javax.swing.JFrame("Main Frame");
-        frame.setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE);
-        frame.setSize(1500, 800);
-        frame.setResizable(false);
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(MainFrame::new);
+    }
 
-        frame.getContentPane().setLayout(new BorderLayout());
+    private void createActions() {
+        newAction = new NewAction();
+        openAction = new OpenAction();
+        saveAction = new SaveAction();
+        copyAction = new CopyAction();
+        pasteAction = new PasteAction();
+        cutAction = new CutAction();
+        compileAction = new CompileAction();
+        aboutAction = new AboutAction();
+    }
 
-        JPanel sidePanel = createSideBar();
-
-        JPanel mainPanel = new JPanel();
+    private void createGUI() {
+        JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
-        mainPanel.setLayout(new BorderLayout());
 
         // Split between the editor (top) and the message area (bottom).
         // The divider can be dragged to resize both vertically.
@@ -43,72 +69,37 @@ public class MainFrame {
 
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
-        // South related to the frame (lower)
-        frame.add(createStatusBar(), BorderLayout.SOUTH);
 
-        // Add panels to the frame
-        frame.add(sidePanel, BorderLayout.WEST);
-        frame.add(mainPanel, BorderLayout.CENTER);
+        mainPanel.add(createMessageArea(), BorderLayout.SOUTH);
 
-        frame.setVisible(true);
+
+        add(new SideBar(
+                newAction,
+                openAction,
+                saveAction,
+                copyAction,
+                pasteAction,
+                cutAction,
+                compileAction,
+                aboutAction
+        ), BorderLayout.WEST);
+
+        add(mainPanel, BorderLayout.CENTER);
+        add(createStatusBar(), BorderLayout.SOUTH);
     }
 
-    public JPanel createSideBar() {
-        JPanel sidePanel = new JPanel();
-        sidePanel.setBackground(Color.LIGHT_GRAY);
-        sidePanel.setLayout(new BoxLayout(sidePanel, BoxLayout.Y_AXIS));
-        sidePanel.setPreferredSize(new Dimension(150, 800));
-
-        sidePanel.add(createJButton("<html><center>New<br><font color='#777777'>[ctrl + n]</html>", "/icons/new.png"));
-        sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("<html><center>Open<br><font color='#777777'> [ctrl + o]</html>", "/icons/open.png"));
-        sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("<html><center>Save<br><font color='#777777'> [ctrl + s]</html>", "/icons/save.png"));
-        sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("<html><center>Copy<br><font color='#777777'>[ctrl + c]</html>", "/icons/copy.png"));
-        sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("<html><center>Paste<br><font color='#777777'> [ctrl + v]</html>", "/icons/paste.png"));
-        sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("<html><center>Cut<br><font color='#777777'> [ctrl + x]</html>", "/icons/cut.png"));
-        sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("<html><center>Compilee<br><font color='#777777'> [F7]</html>", "/icons/compile.png"));
-        sidePanel.add(Box.createRigidArea(new Dimension(0, 3)));
-        sidePanel.add(createJButton("<html><center>About<br><font color='#777777'> [F1]</html>", "/icons/about.png"));
-
-        return sidePanel;
-    }
-
-    public JButton createJButton(String text, String iconPath) {
-        JButton button = new JButton(text);
-
-        java.net.URL url = getClass().getResource(iconPath);
-
-        if (url != null) {
-            ImageIcon icon = new ImageIcon(url);
-
-            int whidht = 23;
-            int height = 23;
-
-            Image imgOriginal = icon.getImage();
-            Image rescaledIcon = imgOriginal.getScaledInstance(whidht, height, Image.SCALE_SMOOTH);
-
-            button.setIcon(new ImageIcon(rescaledIcon));
-
-        } else {
-            System.err.println("Imagem não encontrada em: " + iconPath);
-        }
-
-        button.setVerticalTextPosition(SwingConstants.BOTTOM);
-
-        button.setHorizontalTextPosition(SwingConstants.CENTER);
-
-        button.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        Dimension buttonSize = new Dimension(120, 90);
-        button.setPreferredSize(buttonSize);
-        button.setMaximumSize(buttonSize);
-
-        return button;
+    private void setupKeyBindings() {
+        EditorKeyBindings.register(
+                getRootPane(),
+                newAction,
+                openAction,
+                saveAction,
+                copyAction,
+                pasteAction,
+                cutAction,
+                compileAction,
+                aboutAction
+        );
     }
 
     // create the editor (line numbers on the left and scrollbars always visible)
@@ -185,19 +176,19 @@ public class MainFrame {
         scrollPane.getHorizontalScrollBar().setVisible(true);
         scrollPane.getVerticalScrollBar().setVisible(true);
 
-        scrollPane.setPreferredSize(new Dimension(1350,200));
+        scrollPane.setPreferredSize(new Dimension(1350, 200));
 
-        return scrollPane;        
-
+        return scrollPane;
     }
 
     // create StatusBar (non-editable with scrollbars always visible)
     private JPanel createStatusBar() {
         JPanel statusBar = new JPanel();
+
         statusBar.setLayout(new BorderLayout());
         statusBar.setPreferredSize(new Dimension(1500, 25));
         statusBar.setBackground(Color.LIGHT_GRAY);
-        statusBar.setBorder(BorderFactory.createLineBorder(Color.GRAY,1));
+        statusBar.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 
         statusBarLabel = new JLabel("Nenhum arquivo aberto");
         statusBarLabel.setFont(new Font("Arial", Font.PLAIN, 11));
