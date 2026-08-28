@@ -53,8 +53,8 @@ public class MainFrame extends JFrame {
         openAction = new OpenAction();
         saveAction = new SaveAction();
         copyAction = new CopyAction(editor);
-        pasteAction = new PasteAction();
-        cutAction = new CutAction();
+        pasteAction = new PasteAction(editor);
+        cutAction = new CutAction(editor);
         compileAction = new CompileAction();
         aboutAction = new AboutAction();
     }
@@ -62,8 +62,6 @@ public class MainFrame extends JFrame {
     private void createGUI() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
-
-        editor = new Editor();
 
         // Split between the editor (top) and the message area (bottom).
         // The divider can be dragged to resize both vertically.

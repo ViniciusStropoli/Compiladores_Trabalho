@@ -3,7 +3,6 @@ package org.ui.actions;
 import org.ui.components.Editor;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
 import java.awt.event.ActionEvent;
 
 public class CopyAction extends AbstractAction {
@@ -17,6 +16,6 @@ public class CopyAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("Copy acionado");
+        editor.getTextArea().copy();
     }
 }
