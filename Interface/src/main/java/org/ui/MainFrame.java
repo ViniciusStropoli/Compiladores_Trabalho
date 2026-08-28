@@ -1,6 +1,7 @@
 package org.ui;
 
 import org.ui.actions.*;
+import org.ui.components.Editor;
 import org.ui.components.SideBar;
 import org.ui.keybindings.EditorKeyBindings;
 
@@ -13,8 +14,8 @@ public class MainFrame extends JFrame {
 
     private JTextArea messageArea;
     private JLabel statusBarLabel;
-    private JTextArea editorArea;
-    private JTextArea lineNumberArea;
+
+    private Editor editor;
 
     private Action newAction;
     private Action openAction;
@@ -33,6 +34,8 @@ public class MainFrame extends JFrame {
         setResizable(false);
         setLayout(new BorderLayout());
 
+        editor = new Editor();
+
         createActions();
         createGUI();
         setupKeyBindings();
@@ -49,7 +52,7 @@ public class MainFrame extends JFrame {
         newAction = new NewAction();
         openAction = new OpenAction();
         saveAction = new SaveAction();
-        copyAction = new CopyAction();
+        copyAction = new CopyAction(editor);
         pasteAction = new PasteAction();
         cutAction = new CutAction();
         compileAction = new CompileAction();
@@ -60,29 +63,33 @@ public class MainFrame extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(Color.WHITE);
 
+        editor = new Editor();
+
         // Split between the editor (top) and the message area (bottom).
         // The divider can be dragged to resize both vertically.
-        JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, createEditor(), createMessageArea());
+        JSplitPane splitPane = new JSplitPane(
+                JSplitPane.VERTICAL_SPLIT,
+                editor,
+                createMessageArea()
+        );
+
         splitPane.setResizeWeight(1.0);
         splitPane.setDividerLocation(520);
         splitPane.setBorder(null);
 
         mainPanel.add(splitPane, BorderLayout.CENTER);
 
-
-        mainPanel.add(createMessageArea(), BorderLayout.SOUTH);
-
-
         add(new SideBar(
-                newAction,
-                openAction,
-                saveAction,
-                copyAction,
-                pasteAction,
-                cutAction,
-                compileAction,
-                aboutAction
-        ), BorderLayout.WEST);
+                        newAction,
+                        openAction,
+                        saveAction,
+                        copyAction,
+                        pasteAction,
+                        cutAction,
+                        compileAction,
+                        aboutAction
+                ), BorderLayout.WEST
+        );
 
         add(mainPanel, BorderLayout.CENTER);
         add(createStatusBar(), BorderLayout.SOUTH);
@@ -100,61 +107,6 @@ public class MainFrame extends JFrame {
                 compileAction,
                 aboutAction
         );
-    }
-
-    // create the editor (line numbers on the left and scrollbars always visible)
-    private JScrollPane createEditor() {
-        editorArea = new JTextArea();
-        editorArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        editorArea.setLineWrap(false);
-        editorArea.setMargin(new Insets(0, 5, 0, 5));
-
-        lineNumberArea = new JTextArea("1");
-        lineNumberArea.setFont(new Font("Monospaced", Font.PLAIN, 14));
-        lineNumberArea.setBackground(new Color(230, 230, 230));
-        lineNumberArea.setForeground(Color.GRAY);
-        lineNumberArea.setEditable(false);
-        lineNumberArea.setFocusable(false);
-        lineNumberArea.setMargin(new Insets(0, 5, 0, 5));
-
-        editorArea.getDocument().addDocumentListener(new DocumentListener() {
-            public void insertUpdate(DocumentEvent e) {
-                updateLineNumbers();
-            }
-
-            public void removeUpdate(DocumentEvent e) {
-                updateLineNumbers();
-            }
-
-            public void changedUpdate(DocumentEvent e) {
-                updateLineNumbers();
-            }
-        });
-
-        JScrollPane scrollPane = new JScrollPane(editorArea);
-        scrollPane.setRowHeaderView(lineNumberArea);
-
-        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-
-        scrollPane.setPreferredSize(new Dimension(1350, 520));
-
-        return scrollPane;
-    }
-
-    // keeps the line numbers in sync with the editor content, always starting at 1
-    private void updateLineNumbers() {
-        int lines = editorArea.getLineCount();
-
-        StringBuilder numbers = new StringBuilder();
-        for (int i = 1; i <= lines; i++) {
-            numbers.append(i);
-            if (i < lines) {
-                numbers.append("\n");
-            }
-        }
-
-        lineNumberArea.setText(numbers.toString());
     }
 
     // create MessageArea (non-editable with scrollbars always visible)
