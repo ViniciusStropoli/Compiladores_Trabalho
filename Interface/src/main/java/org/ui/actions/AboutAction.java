@@ -5,12 +5,21 @@ import java.awt.event.ActionEvent;
 
 public class AboutAction extends AbstractAction {
 
-    public AboutAction() {
-        super("About");
+    private final JTextArea messageArea;
+
+    public AboutAction(JTextArea messageArea) {
+        super("Equipe");
+        this.messageArea = messageArea;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("About acionado");
+
+        messageArea.setText(
+                "Equipe:\n"
+                        + "Pedro Renan Luna Tavares\n"
+                        + "Lucas Shimazaki Battisti\n"
+                        + "Vinícius Stropoli de Paula"
+        );
     }
 }

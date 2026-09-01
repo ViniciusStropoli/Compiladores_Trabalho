@@ -5,12 +5,18 @@ import java.awt.event.ActionEvent;
 
 public class CompileAction extends AbstractAction {
 
-    public CompileAction() {
+    private final JTextArea messageArea;
+
+    public CompileAction(JTextArea messageArea) {
         super("Compile");
+        this.messageArea = messageArea;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        System.out.println("Compile acionado");
+
+        messageArea.setText(
+                "compilação de programas ainda não foi implementada"
+        );
     }
 }

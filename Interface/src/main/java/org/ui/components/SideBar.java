@@ -32,7 +32,7 @@ public class SideBar extends JPanel {
 
         addButton(
                 createJButton(
-                        "New",
+                        "Novo",
                         "[Ctrl + N]",
                         "/icons/new.png",
                         newAction
@@ -41,7 +41,7 @@ public class SideBar extends JPanel {
 
         addButton(
                 createJButton(
-                        "Open",
+                        "Abrir",
                         "[Ctrl + O]",
                         "/icons/open.png",
                         openAction
@@ -50,7 +50,7 @@ public class SideBar extends JPanel {
 
         addButton(
                 createJButton(
-                        "Save",
+                        "Salvar",
                         "[Ctrl + S]",
                         "/icons/save.png",
                         saveAction
@@ -59,7 +59,7 @@ public class SideBar extends JPanel {
 
         addButton(
                 createJButton(
-                        "Copy",
+                        "Copiar",
                         "[Ctrl + C]",
                         "/icons/copy.png",
                         copyAction
@@ -68,7 +68,7 @@ public class SideBar extends JPanel {
 
         addButton(
                 createJButton(
-                        "Paste",
+                        "Colar",
                         "[Ctrl + V]",
                         "/icons/paste.png",
                         pasteAction
@@ -77,7 +77,7 @@ public class SideBar extends JPanel {
 
         addButton(
                 createJButton(
-                        "Cut",
+                        "Cortar",
                         "[Ctrl + X]",
                         "/icons/cut.png",
                         cutAction
@@ -86,7 +86,7 @@ public class SideBar extends JPanel {
 
         addButton(
                 createJButton(
-                        "Compile",
+                        "Compilar",
                         "[F7]",
                         "/icons/compile.png",
                         compileAction
@@ -95,7 +95,7 @@ public class SideBar extends JPanel {
 
         addButton(
                 createJButton(
-                        "About",
+                        "Sobre",
                         "[F1]",
                         "/icons/about.png",
                         aboutAction

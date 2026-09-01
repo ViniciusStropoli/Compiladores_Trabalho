@@ -4,11 +4,13 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.io.File;
 
 public class Editor extends JPanel {
 
     private final JTextArea editorArea;
     private final JTextArea lineNumberArea;
+    private File currentFile;
 
     public Editor() {
         setLayout(new BorderLayout());
@@ -106,5 +108,18 @@ public class Editor extends JPanel {
 
     public JTextArea getTextArea() {
         return editorArea;
+    }
+
+    public File getCurrentFile() {
+        return currentFile;
+    }
+
+    public void setCurrentFile(File currentFile) {
+        this.currentFile = currentFile;
+    }
+
+    public void clear() {
+        editorArea.setText("");
+        currentFile = null;
     }
 }
