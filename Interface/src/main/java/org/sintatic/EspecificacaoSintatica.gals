@@ -1,0 +1,72 @@
+#Options
+GenerateScanner = true
+GenerateParser = false
+Language = Java
+ScannerName = Lexico
+ScannerCaseSensitive = true
+ScannerTable = Compact
+Input = String
+#RegularDefinitions
+min: [a-z]
+mai: [A-Z]
+
+bloco: ## [^#]* ##
+#Tokens
+//Especificações
+RE:! (([a-z]+ | [a-z][A-Z])+)+ [a-z] | [a-z]
+
+// and false if in isFalseDo isTrueDo module not or out true while
+and = RE: "and"
+false = RE: "false"
+if = RE: "if"
+in = RE: "in"
+isfalsedo = RE: "isFalseDo"
+istruedo = RE: "isTrueDo"
+module = RE: "module"
+not = RE: "not"
+or = RE: "or"
+out = RE: "out"
+true = RE: "true"
+while = RE: "while"
+
+
+// , : ; [ ] ( ) { } + - * / <- = <> < >
+
+","
+":"
+";"
+"["
+"]"
+"("
+")"
+"{"
+"}"
+"+"
+"-"
+"*"
+"/"
+"<-"
+"="
+"<>"
+"<"
+">"
+
+idint:! i_ [a-z A-Z][a-z A-Z 0-9]*
+
+idfloat:! f_ [a-z A-Z][a-z A-Z 0-9]*
+
+idstring:! s_[a-z A-Z][a-z A-Z 0-9]*
+
+idbool:!b_[a-z A-Z][a-z A-Z 0-9]*
+
+constint:! [0-9]+
+
+constfloat:! [0-9]+ , [0-9]+
+
+conststring:! \"[^\n \" \\]*\"
+
+//reconhecer e ignorar o comentario
+:! {bloco}
+
+// reconhecar e ignorar formatação
+:[\n \t \s]
