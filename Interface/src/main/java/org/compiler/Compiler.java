@@ -17,9 +17,8 @@ public class Compiler {
             StringBuilder result = new StringBuilder();
 
             while ((t = lexico.nextToken()) != null) {
-                result.append(t.getLexeme()).append("\n");
-
-                // só escreve o lexema, necessário escrever t.getId, t.getPosition()
+                result.append(t.getPosition()).append(" - ").append(t.getId()).append(" - ").append(t.getLexeme()).append("\n");
+                // Agora escreve posição e classe, mas é necessario verificar.
 
                 // t.getId () - retorna o identificador da classe (ver Constants.java)
                 // necessário adaptar, pois deve ser apresentada a classe por extenso
