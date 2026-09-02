@@ -1,5 +1,7 @@
 package org.ui.actions;
 
+import org.compiler.Compiler;
+
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
@@ -14,9 +16,8 @@ public class CompileAction extends AbstractAction {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
-        messageArea.setText(
-                "compilação de programas ainda não foi implementada"
-        );
+        Compiler compiler = new Compiler();
+        String code = messageArea.getText();
+        messageArea.setText(compiler.compile(code));
     }
 }
