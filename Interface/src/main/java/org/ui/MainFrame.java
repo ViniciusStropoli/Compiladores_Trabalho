@@ -125,6 +125,7 @@ public class MainFrame extends JFrame {
         cutAction = new CutAction(editor);
 
         compileAction = new CompileAction(
+                editor,
                 messageArea
         );
 

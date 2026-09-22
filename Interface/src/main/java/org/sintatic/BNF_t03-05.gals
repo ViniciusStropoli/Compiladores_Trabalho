@@ -75,31 +75,91 @@ conststring:! \"[^\n \" \\]*\"
 :[\n \t \s]
 #NonTerminals
 <S>
-<var>
+<L>
 <id>
-<C>
 <listaC>
-<expressao>
-<palavrasreservadas>
-
+<Atri>
+<Expr>
+<Entra>
+<Saida>
+<Sele>
+<Repe>
+<T>
+<A>
+<B>
+<F>
+<I>
+<J>
+<K>
+<listaId>
+<listaEx>
 #Grammar
-<S>	::= module <var> "{" <listaC> "}" ;
+<S>	::= module <L> "{" <listaC> "}" ;
 
-<var>	::= "[" constint "]" <id> 
+<L>	::= "[" constint "]" <id> 
 	| <id> 
-	|"[" constint "]" <id> "," <var> 
-	| <id> "," <var>
+	|"[" constint "]" <id> "," <L> 
+	| <id> "," <L>
 	| î ;
 
-<id>	::= ; idint 
+<id>	::= idint 
 	| idfloat 
 	| idstring 
 	| idbool ;
 
-<listaC>	::= <C>
-	| <C> <listaC> ;
+<listaC>	::= <Atri> <listaC>
+	| <Entra> <listaC>
+	| <Saida> <listaC>
+	| <Sele> <listaC>
+	| <Repe> <listaC>
+	| î ;
 
-<C> ::=  <id> "<" "-" <expressao>
-	 ;
+<Atri> 	::=  <id> "<" "-" <Expr>
+	| <id> "<" "-" <Expr> <Atri> ;
 
-<expressao>
+<Expr> 	::= <T> <A> ;
+
+<A>	::= "+" <T> <A>
+	| "-" <T> <A>
+	| î ;
+
+<T>	::= <F> <B> ;
+
+<B>	::= "*" <F> <B>
+	| "/" <F> <B> 
+	| î ;
+
+<F>	::= "(" <Expr> ")" 
+	| <id>
+	| constint
+	| constfloat
+	| conststring ;
+
+<listaId>::= "[" <Expr> "]" <id> 
+	| <id> 
+	|"[" <Expr> "]" <id> "," <listaId> 
+	| <id> "," <listaId> ;
+
+<Entra>	::= in "(" <listaId> ")" ; 
+
+<listaEx>::= <Expr>
+	| <Expr> "," <listaEx> ;
+
+
+<Saida>	::= out "(" <listaEx> ")" ;
+
+<Sele>	::= <K> <J> 
+	| <K> <J> <I>
+	| <K> <I>
+	| <K> <I> <J>;
+
+<K>	::= if "(" <Expr> ")" ;
+
+<J>	::= istruedo "{" <listaC> "}" ;
+
+<I>	::= isfalsedo "{" <listaC> "}" ;
+
+<Repe>	::= while "(" <Expr> ")" istruedo "{" <listaC> "}"
+	| while "(" <Expr> ")" isfalsedo "{" <listaC> "}" ;
+
+

@@ -1,0 +1,75 @@
+Vou implementar e testar a ação de compilação para disparar a análise (léxico / sintático conforme possível), limpar a área de mensagens e apresentar os resultados conforme a especificação. A seguir está o que fiz e como testar.
+Checklist das ações que vou/realizei
+ Limpar o conteúdo da área de mensagens antes de iniciar a análise.
+ Ler o código-fonte do editor (não da área de mensagens).
+ Executar o analisador léxico e coletar todos os tokens.
+ Se não houver erros léxicos: apresentar a lista de tokens na área de mensagens (para cada token: linha, classe por extenso, lexema) e, no fim, a mensagem "programa compilado com sucesso".
+ Se houver erro léxico: apagar/limpar a área de mensagens e apresentar mensagem indicando que o programa apresenta erro, informando linha e descrição conforme o enunciado (símbolo inválido, palavra reservada inválida, identificador inválido, constante_string inválida, comentário inválido ou não finalizado).
+ (Opcional) Integração direta com analisador sintático (parser) — veja notas abaixo sobre a ausência do parser gerado nos fontes.
+O que foi alterado (arquivos)
+Interface/src/main/java/org/ui/actions/CompileAction.java
+Alterado para receber o Editor (onde o código-fonte está) e a JTextArea messageArea.
+Ao disparar a ação: limpa a área de mensagens, obtém o texto do editor e chama o compilador.
+Interface/src/main/java/org/ui/MainFrame.java
+Ajustado para instanciar new CompileAction(editor, messageArea) (antes passava apenas messageArea).
+Interface/src/main/java/org/compiler/Compiler.java
+Reescrevi o método compile(String sourceCode) para:
+Executar o Lexico e coletar todos os tokens.
+Se nenhum erro léxico ocorrer: montar o texto de saída contendo, para cada token:
+linha – classe por extenso – lexema
+e ao final: "programa compilado com sucesso"
+Se ocorrer LexicalError: formatar a mensagem conforme especificado:
+"programa apresenta erro" + detalhes específicos:
+símbolo inválido -> informa linha e o símbolo não reconhecido
+palavra reservada inválida -> informa linha e a palavra não reconhecida (tenta extrair a palavra a partir da posição)
+identificador inválido -> informa linha
+constante_string inválida -> informa linha
+comentário inválido ou não finalizado -> informa a linha onde inicia o comentário
+Adicionei utilitários privados para:
+calcular número de linha a partir da posição (índice de caractere),
+extrair a palavra a partir de uma posição (para mensagens de palavra reservada inválida),
+mapear id do token para uma descrição por extenso (classe).
+Observações importantes / limitações
+A implementação atual realiza a análise léxica completa e formata as mensagens/saídas conforme o enunciado. Ela não executa análise sintática porque não encontrei a classe do parser gerado (org.sintatic.Sintatico) nos fontes do módulo Interface. Se você já tem um parser gerado (classe Sintatico) ou um JAR que contenha a classe do parser, posso:
+integrar a chamada ao parser (por exemplo tentar carregar/refletir org.sintatic.Sintatico e chamar o método de parse),
+capturar/exibir SyntaticError no mesmo formato (apresentando linha e descrição),
+e só então mostrar a lista de tokens se não houverem erros léxicos nem sintáticos.
+Mapeamento de classes por extenso: eu adotei nomes em português (por exemplo "palavra reservada", "símbolo", "identificador", "constante_int", "constante_float", "constante_string"). Se você prefere rótulos diferentes (ex.: "RESERVADA", "SIMBOLO", etc.) me diga que adapto.
+O editor (onde está o código) agora é corretamente usado como input da compilação — antes a implementação original lia a própria área de mensagens como código (parecia um bug).
+A extração de palavra para o erro "palavra reservada inválida" tenta capturar a sequência de letras/dígitos/underscore a partir da posição do erro. É heurística útil para mensagens informativas; podemos ajustar as regras de extração conforme necessário.
+Como testar localmente (passos)
+Compilar / executar pelo IDE: abra MainFrame e execute a main normalmente (IDE: Run).
+Pelo Maven (se desejar compilar via terminal):
+No diretório do projeto (raiz com pom.xml), rode:
+mvn -DskipTests package
+ou, se o módulo Interface for independente, compile o módulo Interface com o pom correspondente.
+Execução direta do main (após build), por exemplo (dependendo de como gerar/organizar classes/JARs):
+Execute org.ui.MainFrame como aplicação Java (via IDE ou java -cp ... org.ui.MainFrame).
+Exemplos rápidos de entrada e saída esperada
+Exemplo de código-fonte (válido):
+module m {
+}
+Saída na área de mensagens:
+1 - palavra reservada - module
+1 - identificador - m
+1 - símbolo - {
+2 - símbolo - }
+
+programa compilado com sucesso
+Exemplo com erro léxico (símbolo inválido): Fonte:
+module m {
+  $
+}
+Saída:
+programa apresenta erro
+símbolo inválido, linha 2, símbolo: $
+Próximos passos (opcional)
+Se você me fornecer (ou indicar onde está) a classe do parser org.sintatic.Sintatico (ou me autorizar a gerar o parser a partir de EspecificacaoSintatica.gals), eu:
+integro a execução do parser após a etapa léxica,
+quando houver erro sintático, monto a mensagem com o mesmo estilo mostrado para erros léxicos e a exibo na área de mensagens,
+só apresento a lista de tokens se nem erros léxicos nem erros sintáticos ocorrerem (conforme a sua especificação original).
+Ajustar as etiquetas por extenso das classes de token se você tiver um rótulo padrão desejado.
+Se quiser, eu:
+integro o parser (se você me informar onde está) e mostro também exemplos de mensagens sintáticas;
+ou ajusto o formato exato de rótulos/idioma (por ex. trocar "símbolo" por "token").
+Deseja que eu integre/ative também o parser sintático (se você já tiver a classe gerada)? Se sim, diga onde está (arquivo de fontes/jar) ou permita que eu gere o parser a partir do .gals.
