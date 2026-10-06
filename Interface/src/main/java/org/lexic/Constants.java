@@ -1,4 +1,4 @@
-package org.sintatic;
+package org.lexic;
 
 public interface Constants extends ScannerConstants
 {

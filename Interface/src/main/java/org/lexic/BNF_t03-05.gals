@@ -1,0 +1,232 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+ScannerCaseSensitive = true
+ScannerTable = Compact
+Input = Stream
+Parser = LL
+#RegularDefinitions
+min: [a-z]
+mai: [A-Z]
+
+bloco: ## [^#]* ##
+#Tokens
+//Especificações
+RE:! (([a-z]+ | [a-z][A-Z])+)+ [a-z] | [a-z]
+
+// and false if in isFalseDo isTrueDo module not or out true while
+and = RE: "and"
+false = RE: "false"
+if = RE: "if"
+in = RE: "in"
+isfalsedo = RE: "isFalseDo"
+istruedo = RE: "isTrueDo"
+module = RE: "module"
+not = RE: "not"
+or = RE: "or"
+out = RE: "out"
+true = RE: "true"
+while = RE: "while"
+
+
+// , : ; [ ] ( ) { } + - * / <- = <> < >
+
+","
+"["
+"]"
+"("
+")"
+"{"
+"}"
+"+"
+"-"
+"*"
+"/"
+"<-"
+"="
+"<>"
+"<"
+">"
+
+idint:! i_ [a-z A-Z][a-z A-Z 0-9]*
+
+idfloat:! f_ [a-z A-Z][a-z A-Z 0-9]*
+
+idstring:! s_[a-z A-Z][a-z A-Z 0-9]*
+
+idbool:!b_[a-z A-Z][a-z A-Z 0-9]*
+
+constint:! [0-9]+
+
+constfloat:! [0-9]+ , [0-9]+
+
+conststring:! \"[^\n \" \\]*\"
+
+//reconhecer e ignorar o comentario
+:! {bloco}
+
+// reconhecar e ignorar formatação
+:[\n \t \s]
+#NonTerminals
+<S>
+<D>
+<L>
+<L_>
+<L_2>
+<id>
+<listaC>
+<listaC_>
+<Atri>
+<Atri_>
+<Entra>
+<Saida>
+<Sele>
+<Sele_>
+<Sele_2>
+<Sele_3>
+<Repe>
+<Repe_>
+<K>
+<J>
+<I>
+<listaId>
+<listaId_>
+<listaId_2>
+<listaEx>
+<listaEx_>
+<Expr>
+<Expr_>
+<termo_logico>
+<relacional>
+<relacional_>
+<operador_relacional>
+<aritmetica>
+<aritmetica_>
+<termo_aritmetico>
+<termo_aritmetico_>
+<fator>
+<identificador_expressao>
+<vetor>	
+#Grammar
+<S> ::= module <D> "{" <listaC> "}" ;
+
+<D> ::= <L> | î ;
+
+// <L> ::= <id> "[" constint "]" | <id> | <id> "[" constint "]" "," <L> | <id> "," <L> ;
+<L> ::= <id> <L_> ;
+
+<L_> ::= "[" constint "]" <L_2> | <L_2> ;
+
+<L_2> ::= "," <L> | î ;
+
+<id> ::= idint 
+	| idfloat 
+	| idstring 
+	| idbool ;
+
+// <listaC> ::= <Atri> <listaC> | <Entra> <listaC> | <Saida> <listaC> | <Sele> <listaC> | <Repe> <listaC> | <Atri> | <Entra> | <Saida> | <Sele> | <Repe> ;
+<listaC> ::= <Atri> <listaC_> 
+	| <Entra> <listaC_> 
+	| <Saida> <listaC_> 
+	| <Sele> <listaC_> 
+	| <Repe> <listaC_> ;
+
+<listaC_> ::= <listaC> | î ;
+
+// <Atri> ::= <id> "<-" <Expr> | <id> "[" <Expr> "]" "<-" <Expr> ;
+<Atri> ::= <id> <Atri_> ;
+
+<Atri_> ::= "<-" <Expr> 
+	| "[" <Expr> "]" "<-" <Expr> ;
+
+// <listaId> ::= <id> "[" <Expr> "]" | <id> | <id> "[" <Expr> "]" "," <listaId> | <id> "," <listaId> ;
+<listaId> ::= <id> <listaId_> ;
+
+<listaId_> ::= "[" <Expr> "]" <listaId_2> 
+	| <listaId_2> ;
+
+<listaId_2> ::= "," <listaId> | î ;
+
+<Entra> ::= in "(" <listaId> ")" ;
+
+// <listaEx> ::= <Expr> | <Expr> "," <listaEx> ;
+<listaEx> ::= <Expr> <listaEx_> ;
+
+<listaEx_> ::= "," <listaEx> | î ;
+
+<Saida> ::= out "(" <listaEx> ")" ;
+
+// <Sele> ::= <K> <J> | <K> <J> <I> | <K> <I> | <K> <I> <J> ;
+<Sele> ::= <K> <Sele_> ;
+
+<Sele_> ::= <J> <Sele_2> 
+	| <I> <Sele_3> ;
+
+<Sele_2> ::= <I> | î ;
+
+<Sele_3> ::= <J> | î ;
+
+<K> ::= if "(" <Expr> ")" ;
+
+<J> ::= istruedo "{" <listaC> "}" ;
+
+<I> ::= isfalsedo "{" <listaC> "}" ;
+
+// <Repe> ::= while "(" <Expr> ")" istruedo "{" <listaC> "}" | while "(" <Expr> ")" isfalsedo "{" <listaC> "}" ;
+<Repe> ::= while "(" <Expr> ")" <Repe_> ;
+
+<Repe_> ::= istruedo "{" <listaC> "}" 
+	| isfalsedo "{" <listaC> "}" ;
+
+<Expr> ::= <termo_logico> <Expr_> ;
+
+<Expr_> ::= î 
+	| and <termo_logico> <Expr_> 
+	| or <termo_logico> <Expr_> ;
+
+<termo_logico> ::= <relacional> 
+	| true 
+	| false 
+	| not <termo_logico> ;
+
+<relacional> ::= <aritmetica> <relacional_> ;
+
+<relacional_> ::= î 
+	| <operador_relacional> <aritmetica> ;
+
+<operador_relacional> ::= "=" 
+	| "<>" 
+	| "<" 
+	| ">" ;
+
+<aritmetica> ::= <termo_aritmetico> <aritmetica_> ;
+
+<aritmetica_> ::= î 
+	| "+" <termo_aritmetico> <aritmetica_> 
+	| "-" <termo_aritmetico> <aritmetica_> ;
+
+<termo_aritmetico> ::= <fator> <termo_aritmetico_> ;
+
+<termo_aritmetico_> ::= î 
+	| "*" <fator> <termo_aritmetico_> 
+	| "/" <fator> <termo_aritmetico_> ;
+
+<fator> ::= <identificador_expressao> <vetor> 
+	| constint 
+	| constfloat 
+	| conststring 
+	| "(" <Expr> ")" 
+	| "+" <fator> 
+	| "-" <fator> ;
+
+<identificador_expressao> ::= idint 
+	| idfloat 
+	| idstring 
+	| idbool ;
+
+<vetor> ::= î 
+	| "[" <Expr> "]" ;

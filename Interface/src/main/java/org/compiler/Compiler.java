@@ -1,8 +1,8 @@
 package org.compiler;
 
-import org.sintatic.LexicalError;
-import org.sintatic.Lexico;
-import org.sintatic.Token;
+import org.lexic.LexicalError;
+import org.lexic.Lexico;
+import org.lexic.Token;
 
 import java.util.ArrayList;
 import java.util.List;
